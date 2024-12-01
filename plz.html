@@ -1,0 +1,325 @@
+
+
+
+
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>심리테스트 - 인문학 추천</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            position: relative;
+        }
+
+        /* 겉표지 화면 */
+        .cover-container {
+            text-align: center;
+            padding: 15% 0;
+            height: 100vh;
+            background-color: #4a90e2;
+            color: white;
+        }
+
+        .cover-title {
+            font-size: 33.6px; /* 기존 48px에서 30% 축소 */
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .start-btn {
+            background-color: #f57c00; /* 주황색 */
+            color: white;
+            border: none;
+            padding: 10px 20px; /* 기존 20px 40px에서 30% 축소 */
+            cursor: pointer;
+            border-radius: 25px;
+            font-size: 16.8px; /* 기존 24px에서 30% 축소 */
+            transition: background-color 0.3s ease;
+        }
+
+        .start-btn:hover {
+            background-color: #e65100; /* 어두운 주황색 */
+        }
+
+        /* 질문 및 선택지 레이아웃 */
+        .question-container {
+            text-align: center;
+            padding: 5% 10%;
+            height: 100vh;
+            box-sizing: border-box;
+            display: none;
+        }
+
+        .question {
+            font-size: 17.6px; /* 기존 25.2px에서 70% 축소 */
+            font-weight: bold;
+            margin-bottom: 40px;
+            color: #2f3e9e;
+        }
+
+        .answers {
+            margin-bottom: 50px;
+        }
+
+        .answer {
+            background-color: navy; /* 남색 */
+            padding: 12px 24px; /* 기존 20px 40px에서 30% 축소 */
+            margin: 20px;
+            border: none;
+            color: #fff;
+            font-size: 16.8px; /* 기존 24px에서 30% 축소 */
+            cursor: pointer;
+            border-radius: 25px;
+            width: 70%; /* 버튼 너비를 더 줄여서 모바일에서 적당히 보이도록 */
+            transition: background-color 0.3s ease;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .answer.selected {
+            background-color: #1e3b5f; /* 선택된 버튼 색상 */
+        }
+
+        .answer:hover {
+            background-color: #000080; /* 더 어두운 남색 */
+        }
+
+        .btn {
+            background-color: #f57c00; /* 주황색 */
+            color: white;
+            border: none;
+            padding: 12px 24px; /* 기존 20px 40px에서 30% 축소 */
+            cursor: pointer;
+            border-radius: 25px;
+            font-size: 16.8px; /* 기존 24px에서 30% 축소 */
+            width: 70%; /* 버튼 너비를 더 줄여서 모바일에서 적당히 보이도록 */
+            margin: 30px auto;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #e65100; /* 어두운 주황색 */
+        }
+
+        .result-container {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .result-title {
+            font-size: 25.2px; /* 기존 36px에서 30% 축소 */
+            font-weight: bold;
+            color: #2f3e9e;
+        }
+
+        .result-description {
+            font-size: 16.8px; /* 기존 24px에서 30% 축소 */
+            margin-top: 30px;
+        }
+
+        /* 모바일 환경에 대한 추가 스타일 */
+        @media screen and (max-width: 600px) {
+            .answer, .btn {
+                padding: 10px 18px; /* 버튼 패딩을 더 줄여서 모바일에서 자연스럽게 보이도록 */
+                font-size: 14px; /* 모바일 화면에서 글씨 크기도 줄임 */
+                width: 80%; /* 모바일에서 버튼을 더 넓게 */
+            }
+
+            .cover-title {
+                font-size: 26px; /* 모바일에서 타이틀 폰트도 작게 */
+            }
+
+            .question {
+                font-size: 12.3px; /* 모바일에서 질문 글씨 크기도 줄여줌 */
+            }
+        }
+
+        /* 결과보기 버튼 */
+        #result-btn {
+            position: relative;
+        }
+
+        /* "인문학 큐레이션 by 신한인의 시선" 텍스트 */
+        .header-text {
+            position: absolute;
+            bottom: -2cm;  /* 결과보기 버튼의 2cm 아래쪽 */
+            right: -2cm;   /* 결과보기 버튼의 2cm 오른쪽 */
+            font-size: 11.2px; /* 기존 16px에서 30% 축소 */
+            font-weight: bold;
+            color: #2f3e9e;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- 겉표지 -->
+    <div id="cover" class="cover-container">
+        <div class="cover-title">인문학 큐레이션 by 신한인의 시선</div>
+        <button id="start-btn" class="start-btn" onclick="startQuiz()">시작</button>
+    </div>
+
+    <!-- 질문지 화면 -->
+    <div id="quiz" class="question-container">
+        <div id="question-container">
+            <!-- Question and answers will be dynamically injected here -->
+        </div>
+        <button id="next-btn" class="btn" style="display:none;" onclick="nextQuestion()">다음</button>
+        <button id="result-btn" class="btn" style="display:none;" onclick="showResult()">결과보기</button>
+    </div>
+
+    <!-- 결과 화면 -->
+    <div id="result" class="result-container">
+        <h2 class="result-title">추천 인문학</h2>
+        <p id="recommended-book" class="result-description"></p>
+    </div>
+
+    <div class="header-text">인문학 큐레이션 by 신한인의 시선</div>
+
+    <script>
+        const questions = [
+    {
+        question: "Q1. 회의 중, 나의 역할은?",
+        options: ["A. 의견을 제시하고 상황을 이끌어가는 리더", "B. 고요히 경청하며 적당히 끼어드는 조용한 아이디어 제공자"]
+    },
+    {
+        question: "Q2. 점심시간에 동료에게 '밥 뭐 먹을까요?'라고 물었을 때, 나의 선택은?",
+        options: ["A. 이미 점심 메뉴를 정해놨으니 내가 원하는 걸 말하고 싶다!", "B. 동료가 원하는 걸 다 존중하고 싶다. 메뉴 선정은 투표로!"]
+    },
+    {
+        question: "Q3. '이 프로젝트를 빨리 끝내야 한다!'는 말에 대한 나의 반응은?",
+        options: ["A. 계획을 세우고 전략적으로 빠르게 해결한다.", "B. 일단 좀 여유를 가지고, 사람들과 협력하는 방법을 고민한다."]
+    },
+    {
+        question: "Q4. 데드라인이 다가올 때, 내 반응은?",
+        options: ["A. 스트레스는 잠깐, 무조건 끝낸다!", "B. 갑자기 생각이 많아지지만, 결국 완벽하게 끝내려고 한다."]
+    },
+    {
+        question: "Q5. 직장에서 실수를 했을 때, 나의 대처법은?",
+        options: ["A. 일단 빠르게 인정하고 해결책을 찾는다.", "B. 내가 왜 실수했는지 잘 분석하고, 팀원에게 의견을 묻는다."]
+    },
+    {
+        question: "Q6. 새로운 프로젝트를 시작할 때, 나의 마음가짐은?",
+        options: ["A. 준비가 완벽해야 한다! 세부 사항부터 체크리스트까지 완벽히 준비한다.", "B. 일단 대충 시작해보고, 진행하면서 고쳐가면 된다."]
+    },
+    {
+        question: "Q7. 동료와 의견 충돌이 있을 때, 나의 행동은?",
+        options: ["A. 논리적으로 내 의견을 제시하고 해결점을 찾는다.", "B. 감정을 조금 배려하면서도, 상대방 의견을 존중한다."]
+    },
+    {
+        question: "Q8. 휴가를 떠날 때의 내 스타일은?",
+        options: ["A. 철저히 계획된 일정에 따라 휴가를 즐긴다.", "B. 떠날 때까진 일도 조금 신경 쓰지만, 도착 후엔 마음껏 휴식을 취한다."]
+    },
+    {
+        question: "Q9. 미팅에서 내가 자주 하는 일은?",
+        options: ["A. 토론을 이끌고 결정을 내리는 사람", "B. 중요한 부분을 놓치지 않으려고 메모하며 경청하는 사람"]
+    },
+    {
+        question: "Q10. '다음 주까지 이 일 처리해 주세요'라는 요청을 받았을 때, 나의 반응은?",
+        options: ["A. 바로 계획을 세우고 일을 시작한다.", "B. 계획은 일단 뒤로 미루고, 일이 다가오면 해야겠다고 생각한다."]
+    }
+];
+
+        const books = [
+    { title: "작별하지 않는다", description: "한강의 깊고 섬세한 문체가 빚어낸 이 작품은, 인간의 상실과 고통을 감정적으로 진지하게 탐구합니다. 그럼에도 불구하고 삶에 대한 희망적인 메시지를 전하는 이 책은 독자에게 깊은 울림을 줍니다." },
+    { title: "다니엘 아샴 (서울 3024)", description: "미래적이고 실험적인 아티스트인 다니엘 아샴의 작품을 통해 서울의 미래를 상상하며 현대와 미래의 경계를 넘나드는 창의적이고 감각적인 작업을 만나볼 수 있습니다." },
+    { title: "역사의 쓸모", description: "역사는 단지 과거의 기록이 아니라 현재를 이해하고 미래를 설계하는 중요한 도구입니다. 이 책은 역사에 대한 깊은 통찰을 제공하며, 오늘날 우리가 역사를 어떻게 바라봐야 할지에 대한 고민을 던집니다." },
+    { title: "위기의 역사", description: "이 책은 위기의 순간들이 역사에 미친 영향을 탐구합니다. 우리가 과거의 위기를 어떻게 극복했는지, 또 현재 위기에서 무엇을 배울 수 있을지를 성찰하게 만듭니다." },
+    { title: "에브리씽 에브리웨어 올 앳 원스", description: "다차원적인 스토리라인과 다채로운 캐릭터가 펼쳐지는 이 영화는 복잡한 현실과 우주적 개념을 넘나들며 사람들에게 삶의 의미를 되새기게 합니다. 그 비범한 상상력과 감동은 관객에게 큰 영향을 미칩니다." },
+    { title: "조직론", description: "현대 사회의 조직과 그 안에서의 역학 관계를 진지하게 탐구하는 이 책은, 조직 내에서의 갈등과 협력의 중요성을 잘 보여줍니다. 특히 비즈니스와 관리의 관점에서 매우 유용합니다." },
+    { title: "우리가 빛의 속도로 갈 수 없다면", description: "과학과 인간의 본질에 대한 깊은 고민을 담은 이 작품은 SF의 틀을 뛰어넘어 인간의 삶과 감정에 대한 강렬한 성찰을 제공합니다. 차별과 소통, 존재의 의미를 진지하게 탐구합니다." },
+    { title: "웨스트사이드 스토리", description: "클래식 뮤지컬의 진수를 보여주는 이 작품은 사랑과 갈등을 주제로 한 전통적인 이야기 구조를 현대적인 감각으로 재해석합니다. 그 음악과 춤, 강렬한 감동은 시간과 공간을 초월합니다." },
+    { title: "에이미 (에이미 와인하우스)", description: "에이미 와인하우스의 삶과 음악을 그린 이 다큐멘터리는 그가 직면한 내적 갈등과 음악에 대한 열정을 진지하게 조명합니다. 그의 음악을 사랑하는 사람이라면 꼭 보아야 할 작품입니다." },
+    { title: "도쿄를 바꾼 빌딩들", description: "도쿄의 독특한 건축물과 그들이 만들어낸 도시 공간을 탐구하는 이 책은 건축에 관심이 있는 사람들에게 영감을 줄 뿐만 아니라, 도시를 구성하는 힘에 대한 깊은 이해를 제공합니다." },
+    { title: "시대예보: 호명사회", description: "현대 사회에서의 흐름과 변화에 대한 통찰을 담은 이 책은, 우리가 처한 사회적 환경과 그 안에서의 개인적인 위치를 다시 한 번 돌아보게 합니다." },
+    { title: "나는 읽고 쓰고 버린다", description: "이 책은 독서와 글쓰기를 통해 삶을 어떻게 변화시킬 수 있는지에 대한 깊은 성찰을 담고 있습니다. 생각을 정리하고 자신만의 문화를 구축하려는 이들에게 강력한 메시지를 전합니다." },
+    { title: "피렌체", description: "피렌체는 이탈리아 르네상스의 발상지로, 그곳에서 탄생한 예술과 건축, 문화는 오늘날에도 많은 이들에게 영감을 줍니다. 이 책을 통해 피렌체의 아름다움과 역사를 엿볼 수 있습니다." },
+    { title: "원칙", description: "삶의 원칙과 규칙을 설정하고 이를 따르는 방법에 대한 이 책은, 조직과 개인의 성장에 중요한 지침이 될 수 있습니다. 성공을 위한 실용적인 조언을 제공합니다." },
+    { title: "불씨1,2", description: "사회적 문제와 인간의 삶에 대한 진지한 질문을 던지는 이 책은 감정적으로 깊이 있는 이야기를 풀어내며, 독자에게 강한 인상을 남깁니다." },
+    { title: "권력의 심리학", description: "권력 관계와 그 안에서 인간의 심리가 어떻게 작동하는지에 대한 흥미로운 통찰을 제공합니다. 권력의 본질을 탐구하고 싶다면 꼭 읽어야 할 책입니다." },
+    { title: "철학은 어떻게 삶의 무기가 되는가", description: "철학의 본질을 삶에 적용하는 법을 알려주는 이 책은, 인간 존재의 의미와 행복을 찾아가는 여정에 필수적인 도구가 됩니다." },
+    { title: "매니페스트", description: "변화와 혁신의 중요성을 강조하는 이 책은 개인과 사회에 변화를 이끌어내는 방법에 대해 논의합니다. 변화의 필요성을 깊이 이해할 수 있습니다." },
+    { title: "헤어질 결심", description: "사람과 사람 사이의 복잡한 감정선과 관계의 끝자락에서 마주하는 감정의 진실을 탐구하는 작품으로, 사랑과 이별에 대한 진지한 고찰을 담고 있습니다." },
+    { title: "미니어처 라이프", description: "작은 것들의 의미를 되새기고, 우리의 일상 속에서 놓치기 쉬운 중요한 가치를 찾아가는 이 책은, 소소한 아름다움과 삶의 본질에 대한 중요한 성찰을 제공합니다." },
+    { title: "김헌의 그리스 로마 신화", description: "그리스와 로마의 신화를 쉽게 풀어낸 이 책은 고대 신화 속에 담긴 인간의 욕망과 교훈을 현대적인 관점에서 이해할 수 있게 도와줍니다." },
+    { title: "다시, 역사의 쓸모", description: "역사의 의미를 재조명하는 이 책은 과거의 사건들이 오늘날 어떻게 영향을 미쳤는지 살펴보며, 현재와 미래의 방향성을 제시합니다." },
+    { title: "쇼펜하우어 인생수업", description: "쇼펜하우어의 철학적 사고를 통해 삶에 대한 깊은 이해와 인생을 살아가는 지혜를 배울 수 있는 작품입니다. 그가 제시하는 삶의 고난과 극복을 탐구할 수 있습니다." },
+    { title: "키케로의 의무론", description: "인간의 도덕적 의무와 윤리에 대한 고찰을 담고 있는 이 책은, 오늘날 우리가 마주한 도덕적 딜레마에 대한 철학적인 해답을 제시합니다." },
+    { title: "어둠속의 대화", description: "대화를 통해 인간의 본질과 존재를 탐구하는 이 작품은, 인간 심리와 감정의 복잡함을 풀어내며 독자에게 큰 울림을 줍니다." },
+    { title: "이터널선샤인", description: "기억과 사랑에 관한 독특한 시각을 제시하는 이 영화는 인간의 감정을 예술적으로 풀어내며, 관객에게 인생의 의미를 되새기게 합니다." },
+    { title: "역행자", description: "반대의 방향으로 나아가는 삶을 선택한 이들의 이야기를 그린 이 책은, 우리가 기존의 규범에서 벗어나 새로운 길을 선택할 때의 용기와 희생을 탐구합니다." },
+    { title: "내 언어의 한계는 내 세계의 한계이다", description: "언어와 생각의 관계를 탐구하는 이 책은, 언어가 우리의 사고방식과 세상을 이해하는 방식에 어떻게 영향을 미치는지에 대한 깊은 성찰을 제공합니다." },
+    { title: "내이름은 삐삐롱스타킹", description: "자유롭고 창의적인 정신을 대표하는 이 이야기는, 독자들에게 어린 시절의 순수함과 모험심을 되살려줍니다." },
+    { title: "월플라워", description: "청소년기의 성장통을 진지하게 다룬 이 작품은, 내면의 상처와 치유 과정을 진지하게 탐구하며, 많은 이들에게 감동과 공감을 불러일으킵니다." },
+    { title: "히가시노 게이고", description: "히가시노 게이고의 독특한 범죄 추리소설 세계를 탐구하는 이 책은, 예리한 관찰력과 미스터리적 요소가 돋보입니다." },
+    { title: "성공한 사람들의 7가지 습관", description: "인생에서 성공을 이루기 위한 습관을 다룬 이 책은, 긍정적인 변화를 일으킬 수 있는 강력한 방법론을 제공합니다." },
+    { title: "어떻게 살 것인가", description: "삶의 방향성을 고민하며, 인간 존재의 의미와 가치를 탐구하는 이 책은, 보다 나은 삶을 위한 통찰을 제공합니다." }
+];
+
+        let currentQuestionIndex = 0;
+        let selectedAnswers = [];
+
+        function startQuiz() {
+            document.getElementById("cover").style.display = 'none';
+            document.getElementById("quiz").style.display = 'block';
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const question = questions[currentQuestionIndex];
+            document.getElementById("question-container").innerHTML = `
+                <div class="question">${question.question}</div>
+                <div class="answers">
+                    <button class="answer" onclick="selectAnswer('A', this)">${question.options[0]}</button>
+                    <button class="answer" onclick="selectAnswer('B', this)">${question.options[1]}</button>
+                </div>
+            `;
+        }
+
+        function selectAnswer(answer, button) {
+            const allAnswers = document.querySelectorAll('.answer');
+            
+            // 기존 선택지 색상 초기화
+            allAnswers.forEach((btn) => {
+                btn.style.backgroundColor = 'navy'; // 기본 색상
+            });
+
+            // 클릭된 버튼에 색상 변경
+            button.style.backgroundColor = 'skyblue'; 
+
+            selectedAnswers[currentQuestionIndex] = answer;
+
+            if (currentQuestionIndex === 9) {
+                document.getElementById("next-btn").style.display = 'none';
+                document.getElementById("result-btn").style.display = 'block';
+            } else {
+                document.getElementById("next-btn").style.display = 'block';
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            loadQuestion();
+            document.getElementById("next-btn").style.display = 'none'; // Hide next button
+        }
+
+        function showResult() {
+            document.getElementById("quiz").style.display = 'none';
+            document.getElementById("result").style.display = 'block';
+            const randomBook = books[Math.floor(Math.random() * books.length)];
+            document.getElementById("recommended-book").innerHTML = `
+                <strong>${randomBook.title}</strong><br>
+                ${randomBook.description}
+            `;
+        }
+    </script>
+</body>
+</html>
