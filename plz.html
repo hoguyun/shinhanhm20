@@ -432,6 +432,9 @@
                     selectedBooks.push(book);
                 }
             }
+            if(selectedBooks.length == 0) {
+                selectedBooks = books; 
+            }
             for(let i=0;i<selectedBooks.length;i++) {
                 if(i==3) break;
                 let random = Math.floor(Math.random() * selectedBooks.length);
